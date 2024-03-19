@@ -12,3 +12,6 @@ def notif():
             timeout = 5
         )
         time.sleep(10)
+
+
+notif()
