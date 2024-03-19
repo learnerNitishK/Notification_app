@@ -30,7 +30,7 @@ def add_notification():
     clear_frame()
     todo_label = ctk.CTkLabel(display, text="Add new Notificaton", font=('Arial', 18))
     todo_label.place(x=237.5, y=20)
-    text_add = ctk.CTkTextbox(display, height=400, width=550, font=('Areal', 12), corner_radius=30)
+    text_add = ctk.CTkTextbox(display, height=400, width=550, font=('Areal', 16), corner_radius=30)
     text_add.place(x=10, y=60)
     addbtn = ctk.CTkButton(display, text='Add Notification',  height=40, width=100, font=('Areal', 12))
     addbtn.place(x=237.5, y=500)
@@ -40,7 +40,7 @@ def add_to_do():
     clear_frame()
     add_todo_label = ctk.CTkLabel(display, text="Add To Do Task", font=('Arial', 18))
     add_todo_label.place(x=237.5, y=20)
-    text_add_todo = ctk.CTkTextbox(display, height=400, width=550, font=('Areal', 12), corner_radius=30)
+    text_add_todo = ctk.CTkTextbox(display, height=400, width=550, font=('Areal', 16), corner_radius=30)
     text_add_todo.place(x=10, y=60)
     add_todobtn = ctk.CTkButton(display, text='Add Task',  height=40, width=100, font=('Areal', 12))
     add_todobtn.place(x=237.5, y=500)
@@ -48,10 +48,28 @@ def add_to_do():
 #  notes button functionality
 def notes_list():
     clear_frame()
-    notes_lable_label = ctk.CTkLabel(display, text="All Notes", font=('Arial', 16))
+    notes_lable_label = ctk.CTkLabel(display, text="Notes", font=('Arial', 16))
     notes_lable_label.place(x=237.5, y=10)
-    notes_frame = ctk.CTkFrame(display, width=500, height=490)
-    notes_frame.place(x=37.5, y=40)
+    all_notes = ctk.CTkButton(display, text='All Notes', height=40, width=100, font=('Areal', 12), command=allnotebtn)
+    all_notes.place(x=10,y=36)
+    new_note = ctk.CTkButton(display, text='New Note', height=40, width=100, font=('Areal', 12), command=new_note1)
+    new_note.place(x=10,y=86)
+
+#  Functionality for the all notes button.
+def allnotebtn():
+    clear_frame()
+    allnotes_lable_label = ctk.CTkLabel(display, text="All Notes", font=('Arial', 16))
+    allnotes_lable_label.place(x=237.5, y=10)
+
+#  Defining functionality for the New Note button.
+def new_note1():
+    clear_frame()
+    new_note_lable = ctk.CTkLabel(display, text="Add New Notes", font=('Arial', 16))
+    new_note_lable.place(x=237.5, y=10)
+    newnote_text = ctk.CTkTextbox(display, height=400, width=550, font=('Areal', 16), corner_radius=30)
+    newnote_text.place(x=10, y=60)
+    savebtn = ctk.CTkButton(display, text='Save', height=40, width=100, font=('Areal', 12))
+    savebtn.place(x=237.5, y=500)
 
 #  main window ui.
 ctk.set_appearance_mode("System")
@@ -86,7 +104,6 @@ frame_lable.place(x=70, y=10)
 
 notf_button = ctk.CTkButton(frame_menu, width=150, height= 50, text='Notifications', font=('Areal', 12), command=open_notification)
 notf_button.place(x=25, y=40)
-
 add_notif = ctk.CTkButton(frame_menu, text='Add Notification', width=150, height= 50, font=('Areal', 12), command=add_notification)
 add_notif.place(x=25, y=100)
 
