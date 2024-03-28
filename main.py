@@ -2,13 +2,13 @@ import customtkinter as ctk
 import threading
 import notifications as nf
 from tkinter import messagebox
-import json
+import os
 
-#  Saving the notes file to  be uses to save the notes.
-notes = "notes.json"
-
-#  Creating a notes dictonary to saperately save the notes.
-notes_dict = {}
+#  Checking the notes file to  be uses to save the notes.
+notes_file = "Notes.txt"
+if not os.path.exists(notes_file):
+    with open(notes_file, 'w') as file:
+        pass
 
 #  Message box to confirm on quitting.
 def on_closing():
@@ -70,6 +70,7 @@ def allnotebtn():
 
 #  Defining functionality for the New Note button.
 def new_note1():
+    global newnote_text
     clear_frame()
     new_note_lable = ctk.CTkLabel(display, text="Add New Notes", font=('Arial', 16))
     new_note_lable.place(x=237.5, y=10)
@@ -80,8 +81,25 @@ def new_note1():
 
 #  Saving the notes from the dictonary to the notes file.
 def save_notes():
-    with open(notes, "w") as f:
-        json.dump(notes_dict, f)   
+    global newnote_text
+    note_text= newnote_text.get("1.0", "end-1c")
+    if note_text:
+        with open(notes_file, "a") as file:
+            file.write(note_text + "\n \n")
+            clear_frame()
+            messagebox.showinfo(title="Done", message="Your note is saved")
+            new_note1()
+
+# For the home page save note button.
+def save_note_h():
+    note1 = text1.get("1.0", "end-1c")
+    if note1:
+        with open(notes_file, "a") as file:
+            file.write(note1 + "\n \n")
+            clear_frame()
+            messagebox.showinfo(title="Done", message="Saved!")
+            new_note1()
+
 
 #  Main window ui.
 ctk.set_appearance_mode("System")
@@ -89,7 +107,7 @@ ctk.set_default_color_theme("green")
 
 window = ctk.CTk()
 window.geometry("800x600")
-window.maxsize(820, 620)
+window.maxsize(800, 600)
 window.title("Notification Centre")
 
 #  Saperate frame for the buttons in menu.
@@ -109,8 +127,8 @@ note_lable.place(x=237.5, y=20)
 text1 = ctk.CTkTextbox(display, height=400, width=550, font=('Areal', 12), corner_radius=30)
 text1.place(x=10, y=60)
 
-save_notes =ctk.CTkButton(display, text='Save Note', height=40, width=100, font=('Areal', 12))
-save_notes.place(x=237.5, y=500)
+save_note =ctk.CTkButton(display, text='Save Note', height=40, width=100, font=('Areal', 12), command= save_note_h)
+save_note.place(x=237.5, y=500)
 
 frame_lable = ctk.CTkLabel(frame_menu, text='MENU', font=('Areal', 16))
 frame_lable.place(x=70, y=10)
