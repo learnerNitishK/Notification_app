@@ -4,35 +4,41 @@ import notifications as nf
 from tkinter import messagebox
 import os
 
-#  Checking the notes file to  be uses to save the notes.
+# Checking the notes file to  be uses to save the notes.
 notes_file = "Notes.txt"
 if not os.path.exists(notes_file):
     with open(notes_file, 'w') as file:
         pass
 
-#  Message box to confirm on quitting.
+# Checking file for to-do list.
+todo_file = "to_do_list.txt"
+if not os.path.exists(todo_file):
+    with open(todo_file, "w") as todo:
+        pass
+
+# Message box to confirm on quitting.
 def on_closing():
     if messagebox.askyesno(title='Quit?', message='Do you really want to quit?'):
         window.destroy()
 
-#  Creating function to clear the display frame to change the ui.
+# Creating function to clear the display frame to change the ui.
 def clear_frame():
     for widget in display.winfo_children():
         widget.destroy()
         
-#  Function for the Notification button.
+# Function for the Notification button.
 def open_notification():
     clear_frame()
     notification_label = ctk.CTkLabel(display, text="Notifications", font=('Arial', 18))
     notification_label.place(x=237.5, y=20)
 
-#  Function for the to-do list button.
+# Function for the to-do list button.
 def open_todo_list():
     clear_frame()
     todo_label = ctk.CTkLabel(display, text="To-Do List", font=('Arial', 18))
     todo_label.place(x=237.5, y=20)
 
-#  Creating ui for the add notification button and functionality. 
+# Creating ui for the add notification button and functionality. 
 def add_notification():
     clear_frame()
     todo_label = ctk.CTkLabel(display, text="Add new Notificaton", font=('Arial', 18))
@@ -42,7 +48,7 @@ def add_notification():
     addbtn = ctk.CTkButton(display, text='Add Notification',  height=40, width=100, font=('Areal', 12))
     addbtn.place(x=237.5, y=500)
 
-#  UI and functionality for the add to-do list.
+# UI and functionality for the add to-do list.
 def add_to_do():
     clear_frame()
     add_todo_label = ctk.CTkLabel(display, text="Add To Do Task", font=('Arial', 18))
@@ -52,23 +58,17 @@ def add_to_do():
     add_todobtn = ctk.CTkButton(display, text='Add Task',  height=40, width=100, font=('Areal', 12))
     add_todobtn.place(x=237.5, y=500)
 
-#  Notes button functionality
+# Notes button functionality
 def notes_list():
     clear_frame()
     notes_lable_label = ctk.CTkLabel(display, text="Notes", font=('Arial', 16))
     notes_lable_label.place(x=237.5, y=10)
-    all_notes = ctk.CTkButton(display, text='All Notes', height=40, width=100, font=('Areal', 12), command=allnotebtn)
+    all_notes = ctk.CTkButton(display, text='All Notes', height=40, width=100, font=('Areal', 12), command=display_notes)
     all_notes.place(x=10,y=36)
     new_note = ctk.CTkButton(display, text='New Note', height=40, width=100, font=('Areal', 12), command=new_note1)
     new_note.place(x=10,y=86)
 
-#  Functionality for the all notes button.
-def allnotebtn():
-    clear_frame()
-    allnotes_lable_label = ctk.CTkLabel(display, text="All Notes", font=('Arial', 16))
-    allnotes_lable_label.place(x=237.5, y=10)
-
-#  Defining functionality for the New Note button.
+# Defining functionality for the New Note button.
 def new_note1():
     global newnote_text
     clear_frame()
@@ -79,7 +79,7 @@ def new_note1():
     savebtn = ctk.CTkButton(display, text='Save', height=40, width=100, font=('Areal', 12), command=save_notes)
     savebtn.place(x=237.5, y=500)
 
-#  Saving the notes from the dictonary to the notes file.
+# Saving the notes to the notes file.
 def save_notes():
     global newnote_text
     note_text= newnote_text.get("1.0", "end-1c")
@@ -89,6 +89,8 @@ def save_notes():
             clear_frame()
             messagebox.showinfo(title="Done", message="Your note is saved")
             new_note1()
+    if not note_text:
+        messagebox.showinfo(title="Empty!", message="Please type something to save.")
 
 # For the home page save note button.
 def save_note_h():
@@ -99,22 +101,48 @@ def save_note_h():
             clear_frame()
             messagebox.showinfo(title="Done", message="Saved!")
             new_note1()
+    if not note1:
+        messagebox.showinfo(title="Empty!", message="Nothing to save, please type something.")
+
+# Displaying notes in the display frame.
+def display_notes():
+    clear_frame()
+    with open(notes_file, "r") as file:
+        all_notes = file.read().strip().split("\n \n")
+    
+    if all_notes:
+        for index, note in enumerate(all_notes):
+            # The length of note for display.
+            note_preview = note[:20]
+             
+            # Displaying the note on the button.
+            note_button = ctk.CTkButton(display, text=f"Note {index+1}: {note_preview}...", width=150, height=40,
+                                         font=('Arial', 12), command=lambda n=note: open_note(n))
+            note_button.place(x=50, y=index * 50 + 50)
+
+def open_note(note_content):
+    clear_frame()
+    note_label = ctk.CTkLabel(display, text="Note Content", font=('Arial', 18))
+    note_label.place(x=237.5, y=20)
+    note_text = ctk.CTkLabel(display, text=note_content, height=400, width=550, font=('Arial', 16), wraplength=500)
+    note_text.place(x=10, y=60)
 
 
-#  Main window ui.
+# Main window ui.
 ctk.set_appearance_mode("System")
 ctk.set_default_color_theme("green")
 
 window = ctk.CTk()
 window.geometry("800x600")
 window.maxsize(800, 600)
-window.title("Notification Centre")
+window.title("Utility Centre")
 
-#  Saperate frame for the buttons in menu.
+
+# Saperate frame for the buttons in menu.
 frame_menu = ctk.CTkFrame(window, width=200, height=550)
 frame_menu.place(x=10, y=40)
 
-#  Saperate frame for the display and button functionality.
+# Saperate frame for the display and button functionality.
 display = ctk.CTkFrame(window, width=575, height=550)
 display.place(x=220, y=40)
 
