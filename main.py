@@ -72,6 +72,8 @@ def notes_list():
 def new_note1():
     global newnote_text
     clear_frame()
+    back = ctk.CTkButton(display, text= '\u2190 Back', width=50, height=20, font=('Areal', 12), command=notes_list)
+    back.place(x=10, y=5)
     new_note_lable = ctk.CTkLabel(display, text="Add New Notes", font=('Arial', 16))
     new_note_lable.place(x=237.5, y=10)
     newnote_text = ctk.CTkTextbox(display, height=400, width=550, font=('Areal', 16), corner_radius=30)
@@ -109,6 +111,9 @@ def display_notes():
     clear_frame()
     with open(notes_file, "r") as file:
         all_notes = file.read().strip().split("\n \n")
+
+    back = ctk.CTkButton(display, text= '\u2190 Back', width=50, height=20, font=('Areal', 12), command=notes_list)
+    back.place(x=10, y=5)
     
     if all_notes:
         for index, note in enumerate(all_notes):
@@ -119,13 +124,29 @@ def display_notes():
             note_button = ctk.CTkButton(display, text=f"Note {index+1}: {note_preview}...", width=150, height=40,
                                          font=('Arial', 12), command=lambda n=note: open_note(n))
             note_button.place(x=50, y=index * 50 + 50)
+            delete_button = ctk.CTkButton(display, text="Delete!", width=50, height=30, font=('Areal', 10), command=lambda id=index: delete_note(id))
+            delete_button.place(x=300, y= index * 50 + 60)
 
+# Defining a function to open the note on display.
 def open_note(note_content):
     clear_frame()
     note_label = ctk.CTkLabel(display, text="Note Content", font=('Arial', 18))
     note_label.place(x=237.5, y=20)
     note_text = ctk.CTkLabel(display, text=note_content, height=400, width=550, font=('Arial', 16), wraplength=500)
     note_text.place(x=10, y=60)
+
+# Deleting a note.
+def delete_note(index):
+    with open(notes_file, "r") as file:
+        all_notes = file.read().strip().split("\n \n")
+    del all_notes[index]
+    with open(notes_file, "w") as file:
+        if all_notes:
+            file.write("\n \n".join(all_notes))
+        else:
+            file.write("")
+    display_notes()
+
 
 
 # Main window ui.
@@ -146,7 +167,7 @@ frame_menu.place(x=10, y=40)
 display = ctk.CTkFrame(window, width=575, height=550)
 display.place(x=220, y=40)
 
-lable = ctk.CTkLabel(window, text='Notification Centre', font=('Areal', 18))
+lable = ctk.CTkLabel(window, text='Utility Centre', font=('Areal', 18))
 lable.pack(pady=10, padx=20)
 
 note_lable = ctk.CTkLabel(display, text='Create Note', width=100, font=('Areal', 20))
