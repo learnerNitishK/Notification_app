@@ -110,7 +110,7 @@ def save_note_h():
 def display_notes():
     clear_frame()
     with open(notes_file, "r") as file:
-        all_notes = file.read().strip().split("\n \n")
+        all_notes = [note.strip() for note in file.readlines() if note.strip()]
 
     back = ctk.CTkButton(display, text= '\u2190 Back', width=50, height=20, font=('Areal', 12), command=notes_list)
     back.place(x=10, y=5)
@@ -126,6 +126,8 @@ def display_notes():
             note_button.place(x=50, y=index * 50 + 50)
             delete_button = ctk.CTkButton(display, text="Delete!", width=50, height=30, font=('Areal', 10), command=lambda id=index: delete_note(id))
             delete_button.place(x=300, y= index * 50 + 60)
+    else:
+        clear_frame()
 
 # Defining a function to open the note on display.
 def open_note(note_content):
