@@ -50,12 +50,13 @@ def add_notification():
 
 # UI and functionality for the add to-do list.
 def add_to_do():
+    global text_add_todo
     clear_frame()
     add_todo_label = ctk.CTkLabel(display, text="Add To Do Task", font=('Arial', 18))
     add_todo_label.place(x=237.5, y=20)
     text_add_todo = ctk.CTkTextbox(display, height=400, width=550, font=('Areal', 16), corner_radius=30)
     text_add_todo.place(x=10, y=60)
-    add_todobtn = ctk.CTkButton(display, text='Add Task',  height=40, width=100, font=('Areal', 12))
+    add_todobtn = ctk.CTkButton(display, text='Add Task',  height=40, width=100, font=('Areal', 12), command=save_todo)
     add_todobtn.place(x=237.5, y=500)
 
 # Notes button functionality
@@ -92,7 +93,7 @@ def save_notes():
             messagebox.showinfo(title="Done", message="Your note is saved")
             new_note1()
     if not note_text:
-        messagebox.showinfo(title="Empty!", message="Please type something to save.")
+        messagebox.showerror(title="Empty!", message="Please type something to save.")
 
 # For the home page save note button.
 def save_note_h():
@@ -101,8 +102,9 @@ def save_note_h():
         with open(notes_file, "a") as file:
             file.write(note1 + "\n \n")
             clear_frame()
-            messagebox.showinfo(title="Done", message="Saved!")
             new_note1()
+            messagebox.showinfo(title="Done", message="Saved!")
+
     if not note1:
         messagebox.showinfo(title="Empty!", message="Nothing to save, please type something.")
 
@@ -148,6 +150,19 @@ def delete_note(index):
         else:
             file.write("")
     display_notes()
+
+# Save to-do list.
+def save_todo():
+    global text_add_todo
+    todo_text = text_add_todo.get("1.0", "end-1c")
+    if todo_text:
+        with open(todo_file, "a") as file:
+            file.write(todo_text + "\n \n")
+            clear_frame()
+            add_to_do()
+            messagebox.showinfo(title="Done!", message="Saved!")
+    else:
+        messagebox.showerror(title="Empty", message="Nothing to save!")
 
 
 
