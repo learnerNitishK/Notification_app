@@ -21,7 +21,7 @@ def on_closing():
     if messagebox.askyesno(title='Quit?', message='Do you really want to quit?'):
         window.destroy()
 
-# Creating function to clear the display frame to change the ui.
+# Function to clear the display frame to change the ui.
 def clear_frame():
     for widget in display.winfo_children():
         widget.destroy()
@@ -33,7 +33,7 @@ def open_notification():
     notification_label.place(x=237.5, y=20)
 
 # Function for the to-do list button.
-def open_todo_list():
+def display_todo_list():
     clear_frame()
     todo_label = ctk.CTkLabel(display, text="To-Do List", font=('Arial', 18))
     todo_label.place(x=237.5, y=20)
@@ -51,18 +51,36 @@ def open_todo_list():
         for index, todo in enumerate(todo_content):
             todo_preview = todo[:20]
 
-            todo_btn = ctk.CTkButton(display, text=f"List {index}: {todo_preview}...", width=150, height=40, font=('Arial', 12))
+            todo_btn = ctk.CTkButton(display, text=f"List {index + 1}: {todo_preview}...", width=150, height=40, font=('Arial', 12), command= lambda t=todo: open_todo(t))
             todo_btn.place(x=50, y=index* 50 + 50)
-            del_btn = ctk.CTkButton(display, text="Delete.", font=('Arial', 10))
+            del_btn = ctk.CTkButton(display, text="Delete.", font=('Arial', 10), command= lambda id=index: del_todo(id))
             del_btn.place(x=300, y=index* 50 + 50)
             
     else:
         empty_lable =  ctk.CTkLabel(display, text="No List Created!", font=('Arial', 50), text_color='#B1B3B4')
         empty_lable.place(relx=0.5, rely=0.5, anchor="center")
 
-        
+# Creating Function to open to-do list from the all list.
+def open_todo(todo_content):
+    clear_frame()
+    todo_lable = ctk.CTkLabel(display, text="To-Do list", font=('Arial', 18))
+    todo_lable.place(x=237.5, y=20)
+    todo_text = ctk.CTkLabel(display, text=todo_content,height=400, width=550, font=('Arial', 16), wraplength=500)
+    todo_text.place(x=10, y=60)
+   
+# Function to Delete the to-do list.
+def del_todo(index):
+    with open(todo_file, 'r') as file:
+        all_list = file.read().strip().split("\n\n")
+        del all_list[index]
+    with open(todo_file, 'w') as file:
+        if all_list:
+            file.write("\n\n".join(all_list))
+        else:
+            file.write("")
+    display_todo_list()
 
-# Creating ui for the add notification button and functionality. 
+# Creating UI for the add notification button and functionality. 
 def add_notification():
     clear_frame()
     todo_label = ctk.CTkLabel(display, text="Add new Notificaton", font=('Arial', 18))
@@ -173,7 +191,7 @@ def open_note(note_content):
 # Deleting a note.
 def delete_note(index):
     with open(notes_file, "r") as file:
-        all_notes = file.read().strip().split("\n \n")
+        all_notes = file.read().strip().split("\n\n")
     del all_notes[index]
     with open(notes_file, "w") as file:
         if all_notes:
@@ -236,7 +254,7 @@ notf_button.place(x=25, y=40)
 add_notif = ctk.CTkButton(frame_menu, text='Add Notification', width=150, height= 50, font=('Arial', 12), command=add_notification)
 add_notif.place(x=25, y=100)
 
-todo = ctk.CTkButton(frame_menu, text='To-Do List', width=150, height= 50, font=('Arial', 12), command=open_todo_list)
+todo = ctk.CTkButton(frame_menu, text='To-Do List', width=150, height= 50, font=('Arial', 12), command=display_todo_list)
 todo.place(x=25, y=160)
 
 add_todo = ctk.CTkButton(frame_menu, text='Add To-Do Task', width=150, height= 50, font=('Arial', 12), command=add_to_do)
