@@ -3,6 +3,8 @@ import threading
 import notifications as nf
 from tkinter import messagebox
 import os
+from tkcalendar import DateEntry
+
 
 # Checking the notes file to  be uses to save the notes.
 notes_file = "Notes.txt"
@@ -13,7 +15,7 @@ if not os.path.exists(notes_file):
 # Checking file for to-do list.
 todo_file = "to_do_list.txt"
 if not os.path.exists(todo_file):
-    with open(todo_file, "w") as todo:
+    with open(todo_file, 'w') as todo:
         pass
 
 # Message box to confirm on quitting.
@@ -31,6 +33,8 @@ def open_notification():
     clear_frame()
     notification_label = ctk.CTkLabel(display, text="All Notifications", font=('Arial', 18))
     notification_label.place(x=237.5, y=20)
+    text_lable = ctk.CTkLabel(display, text="No Notifications Yet!", font=('Arial', 50), text_color='#B1B3B4')
+    text_lable.place(relx=0.5, rely=0.5, anchor="center")
 
 # Function for the to-do list button.
 def display_todo_list():
@@ -83,31 +87,36 @@ def del_todo(index):
 # GUI for the add notification button and functionality. 
 def add_notification():
     clear_frame()
-    todo_label = ctk.CTkLabel(display, text="Add new Notificaton", font=('Arial', 18))
+    global interval_label
+    todo_label = ctk.CTkLabel(display, text="Add New Notificaton", font=('Arial', 18))
     todo_label.place(x=237.5, y=20)
     title_lable = ctk.CTkLabel(display, text="Title :- ", font=('Arial',16))
     title_lable.place(x=15, y=78)
     title = ctk.CTkEntry(display, width=200, height=20, placeholder_text="Enter title for the Notification")
     title.place(x=100 , y=80)
-    interval = ctk.CTkSlider(display, width=300, height=20, from_=0, to=24, number_of_steps=48, button_hover_color="Green")
+    interval = ctk.CTkSlider(display, width=300, height=20, from_=1, to=60, number_of_steps=59, button_hover_color="Green", command=update_interval)
     interval.place(x=100, y= 150)
-    interval_label = ctk.CTkLabel(display, text=f"Interval: {interval.get()}", font=('Arial', 16))
-    interval_label.place(x=450, y=148)
+    interval_label = ctk.CTkLabel(display, text=f"Repeat: {interval.get()} min's.", font=('Arial', 16), text_color="#4EAD51")
+    interval_label.place(x=440, y=148)
     daily = ctk.StringVar(value="Everyday")
     radio1 = ctk.CTkRadioButton(display, text="Daily", border_width_checked=5, border_width_unchecked=2, variable=daily)
     radio1.place(x=100, y= 200)
     radio2 = ctk.CTkRadioButton(display, text="Regular Interval", border_width_checked=5, border_width_unchecked=2, variable=daily)
-    radio2.place(x=200, y= 200)
+    radio2.place(x=200, y=200)
+    date = DateEntry(display, font=('Arial', 12), width=15, background='darkblue',foreground='white', borderwidth=5)
+    date.place(x=410, y=250)
     body = ctk.CTkLabel(display, text="Notification\nMessage: ", font=('Arial', 16))
     body.place(x=15, y=334)
     noti_body = ctk.CTkTextbox(display, width=300, height=200, corner_radius=30)
     noti_body.place(x=100, y=250)
     save_notification = ctk.CTkButton(display, text="Save!", height=40, width=100, font=('Arial', 12))
     save_notification.place(x=215, y=500)
-    # text_add = ctk.CTkTextbox(display, height=400, width=550, font=('Arial', 16), corner_radius=30)
-    # text_add.place(x=10, y=60)
-    # addbtn = ctk.CTkButton(display, text='Add Notification',  height=40, width=100, font=('Arial', 12))
-    # addbtn.place(x=237.5, y=500)
+    
+
+def update_interval(value):
+    interval_label.configure(text=f"Repeat: {int(value)} min's.")
+    
+
 
 # UI and functionality for the add to-do list.
 def add_to_do():
