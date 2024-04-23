@@ -3,7 +3,6 @@ import threading
 import notifications as nf
 from tkinter import messagebox
 import os
-from tkcalendar import DateEntry
 
 
 # Checking the notes file to  be uses to save the notes.
@@ -16,6 +15,16 @@ if not os.path.exists(notes_file):
 todo_file = "to_do_list.txt"
 if not os.path.exists(todo_file):
     with open(todo_file, 'w') as todo:
+        pass
+
+# Checking Notification file.
+daily_notif = "DailyNotify.txt"
+regular_notif = "RegularNotif.txt"
+if not os.path.exists(daily_notif):
+    with open(daily_notif, 'w') as daily:
+        pass
+if not os.path.exists(regular_notif):
+    with open(regular_notif, 'w') as daily:
         pass
 
 # Message box to confirm on quitting.
@@ -98,23 +107,37 @@ def add_notification():
     interval.place(x=100, y= 150)
     interval_label = ctk.CTkLabel(display, text=f"Repeat: {interval.get()} min's.", font=('Arial', 16), text_color="#4EAD51")
     interval_label.place(x=440, y=148)
-    daily = ctk.StringVar(value="Everyday")
-    radio1 = ctk.CTkRadioButton(display, text="Daily", border_width_checked=5, border_width_unchecked=2, variable=daily)
+    daily = ctk.StringVar(value="Regular")
+    radio1 = ctk.CTkRadioButton(display, text="Daily", border_width_checked=5, border_width_unchecked=2, variable=daily, value="Daily")
     radio1.place(x=100, y= 200)
-    radio2 = ctk.CTkRadioButton(display, text="Regular Interval", border_width_checked=5, border_width_unchecked=2, variable=daily)
+    radio2 = ctk.CTkRadioButton(display, text="Regular Interval", border_width_checked=5, border_width_unchecked=2, variable=daily, value="Regular")
     radio2.place(x=200, y=200)
-    date = DateEntry(display, font=('Arial', 12), width=15, background='darkblue',foreground='white', borderwidth=5)
-    date.place(x=410, y=250)
     body = ctk.CTkLabel(display, text="Notification\nMessage: ", font=('Arial', 16))
     body.place(x=15, y=334)
     noti_body = ctk.CTkTextbox(display, width=300, height=200, corner_radius=30)
     noti_body.place(x=100, y=250)
-    save_notification = ctk.CTkButton(display, text="Save!", height=40, width=100, font=('Arial', 12))
+    save_notification = ctk.CTkButton(display, text="Save!", height=40, width=100, font=('Arial', 12), command=lambda: save_notify(title.get(),noti_body.get("1.0", "end-1c"),daily.get(),interval.get() if daily=="Regular" else None))
     save_notification.place(x=215, y=500)
     
-
+# Updating notification timer interval.
 def update_interval(value):
     interval_label.configure(text=f"Repeat: {int(value)} min's.")
+
+# Saving New Notifications.
+def save_notify(title,message,daily,interval):
+    if daily == "Daily":
+        with open(daily_notif, 'a') as daily:
+            daily.write(f"{title} | {message}\n")
+        clear_frame()
+        add_notification()
+        messagebox.showinfo(title="Saved!", message="Notification Saved!")
+
+    elif daily == "Regular":
+        with open(regular_notif, 'a') as regular:
+            regular.write(f"{title} | {interval} | {message}\n")
+        clear_frame()
+        add_notification()
+        messagebox.showinfo(title="Saved!", message="Notification Saved!")
     
 
 
